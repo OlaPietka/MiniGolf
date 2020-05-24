@@ -1,5 +1,4 @@
 import physics
-import numpy as np
 import pygame
 from pygame import Vector2
 from game_objects import Ball, Wall
@@ -28,13 +27,13 @@ mf = Vector2(0, 0)
 
 ball = Ball()
 wall = Wall(Vector2(150, 100), Vector2(150, 200), ball.radius)
+wall2 = Wall(Vector2(150, 100), Vector2(200, 150), ball.radius)
 
 
 if __name__ == "__main__":
     while not game_end:
         screen.fill(0)
-        dt = clock.tick(140)
-        force = np.zeros(2, dtype=float)
+        dt = clock.tick(140) / 100.0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,11 +42,10 @@ if __name__ == "__main__":
                 mi = Vector2(pygame.mouse.get_pos())
             if event.type == pygame.MOUSEBUTTONUP:
                 mf = Vector2(pygame.mouse.get_pos())
-                force = (mi-mf) * 0.0005
+                ball.apply_force((mi-mf)*10)
 
-        ball.move(force, dt)
-        next_ball = Ball(*ball.next(force, dt+1))
-        time_line = Line(ball.pos, next_ball.pos)
+        ball.move(dt)
+        time_line = Line(ball.pos, ball.pos + ball.vel * dt)
         time_line.draw(screen)
 
         if ball.pos[0] + ball.radius >= SCREEN_SIZE or ball.pos[0] - ball.radius <= 0:
@@ -55,15 +53,11 @@ if __name__ == "__main__":
         if ball.pos[1] + ball.radius >= SCREEN_SIZE or ball.pos[1] - ball.radius <= 0:
             ball.vel[1] *= -1
 
-        inter_points = physics.closest_intersection(wall.hitbox, time_line, ball.pos)
-        if inter_points != None:
-            ball.set_pos(inter_points)
-
-
-            collided, normal, depth, closest = physics.segment_circle_collision(wall, ball)
-            if depth == None:
-                print("test")
-            ball.bounce(normal, depth)
+        inter_point = physics.closest_intersection(wall.hitbox, time_line, ball.pos)
+        if inter_point is not None:
+            normal = physics.normal_segment_circle(wall, ball)
+            ball.set_pos(inter_point)
+            ball.bounce(normal)
 
         ball.draw(screen)
         wall.draw(screen)

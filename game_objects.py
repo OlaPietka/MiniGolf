@@ -1,28 +1,30 @@
+import math
+
 from pygame import Vector2
 from shapes import Circle, Line
 
 
 class Ball(Circle):
-    ball_mass = 0.5
     friction = 0.98
 
     def __init__(self, pos=Vector2(180, 200), vel=Vector2(0, 0)):
         super().__init__(pos)
         self.vel = vel
         self.image = 'images/ball_golf.png'
+        self.acc = Vector2(0, 0)
+        self.mass = math.pi * self.radius * self.radius
 
-    def move(self, force, t):
-        self.vel = (self.vel + (force / self.ball_mass) * t) * self.friction
+    def apply_force(self, force):
+        self.acc += force
+
+    def move(self, t):
+        self.vel += self.acc * t
+        self.vel *= self.friction
         self.pos += self.vel * t
+        self.acc = Vector2(0, 0)
 
-    def bounce(self, normal, depth):
+    def bounce(self, normal):
         self.vel -= 2 * normal * (self.vel.dot(normal))
-        self.pos += normal * depth
-
-    def next(self, force, t):
-        vel = (self.vel + (force / self.ball_mass) * t) * self.friction
-        pos = self.pos + vel * t
-        return pos, vel
 
 
 class Wall(Line):

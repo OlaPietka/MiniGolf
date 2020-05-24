@@ -17,6 +17,13 @@ def closest_point_on_segment(seg, circle_pos):
     return closest
 
 
+def normal_segment_circle(seg, circle):
+    closest = closest_point_on_segment(seg, circle.pos)
+
+    dist_v = circle.pos - closest
+    return dist_v.normalize()
+
+
 def segment_circle_collision(seg, circle):
     closest = closest_point_on_segment(seg, circle.pos)
 
@@ -87,10 +94,10 @@ def segment_circle_intersects(seg, circle):
     return True
 
 
-def intersection_circle_segment_points(seg, circle):
+def intersection_circle_segment_point(seg, circle):
     collided = segment_circle_intersects(seg, circle)
     if not collided:
-        return None, None
+        return None
 
     dx, dy = seg.vec
     p1, q1 = seg.a
@@ -108,12 +115,20 @@ def intersection_circle_segment_points(seg, circle):
     delta = b * b - 4 * a * c
 
     if delta < 0 or abs(a) < 0.000001:
-        return None, None
+        return None
 
     mu1 = (-b + sqrt(delta)) / (2 * a)
     mu2 = (-b - sqrt(delta)) / (2 * a)
 
-    return Vector2(p1 + mu1 * (p2 - p1), q1 + mu1 * (q2 - q1)), Vector2(p1 + mu2 * (p2 - p1), q1 + mu2 * (q2 - q1))
+    points = []
+    if 0 <= mu1 <= 1:
+        points.append(Vector2(p1 + mu1 * (p2 - p1), q1 + mu1 * (q2 - q1)))
+    if 0 <= mu2 <= 1:
+        points.append(Vector2(p1 + mu2 * (p2 - p1), q1 + mu2 * (q2 - q1)))
+
+    if len(points) == 0:
+        return None
+    return points
 
 
 def closest_intersection(shapes, seg, current_pos):
@@ -125,8 +140,8 @@ def closest_intersection(shapes, seg, current_pos):
             if intersection is not None:
                 distances[(intersection - current_pos).length()] = intersection
         if isinstance(shape, Circle):
-            intersections = intersection_circle_segment_points(seg, shape)
-            if intersections != (None, None):
+            intersections = intersection_circle_segment_point(seg, shape)
+            if intersections is not None:
                 for intersection in intersections:
                     distances[(intersection - current_pos).length()] = intersection
 
