@@ -1,4 +1,9 @@
-def closest_point_on_seg(seg, circle_pos):
+from math import sqrt
+from pygame import Vector2
+from shapes import Line, Circle
+
+
+def closest_point_on_segment(seg, circle_pos):
     pt_v = circle_pos - seg.a  # vector ac (from a to center of the circle c)
 
     proj = pt_v.dot(seg.unit)  # length of vector from a to closest
@@ -12,8 +17,8 @@ def closest_point_on_seg(seg, circle_pos):
     return closest
 
 
-def segment_circle(seg, circle):
-    closest = closest_point_on_seg(seg, circle.pos)
+def segment_circle_collision(seg, circle):
+    closest = closest_point_on_segment(seg, circle.pos)
 
     dist_v = circle.pos - closest
     if dist_v.length() > circle.radius:
@@ -23,7 +28,7 @@ def segment_circle(seg, circle):
     return True, dist_v.normalize(), depth, closest
 
 
-def intersects(seg1, seg2):
+def segments_intersects(seg1, seg2):
     def on_segment(p, q, r):
         if max(p[0], q[0]) >= r[0] >= min(p[0], q[0]) and max(p[1], q[1]) >= r[1] >= min(p[1], q[1]):
             return True
@@ -54,7 +59,7 @@ def intersects(seg1, seg2):
     return False
 
 
-def intersection_point(seg1, seg2):
+def intersection_segments_point(seg1, seg2):
     r = seg1.vec
     s = seg2.vec
 
@@ -68,4 +73,69 @@ def intersection_point(seg1, seg2):
     if rxs != 0 and 0 <= t <= 1 and 0 <= u <= 1:
         return seg1.a+t*r
     return None
+
+
+def segment_circle_intersects(seg, circle):
+    if seg.length == 0:
+        return False
+
+    closest = closest_point_on_segment(seg, circle.pos)
+
+    dist_v = circle.pos - closest
+    if dist_v.length() > circle.radius:
+        return False
+    return True
+
+
+def intersection_circle_segment_points(seg, circle):
+    collided = segment_circle_intersects(seg, circle)
+    if not collided:
+        return None, None
+
+    dx, dy = seg.vec
+    p1, q1 = seg.a
+    p2, q2 = seg.b
+    cx, cy = circle.pos
+
+    a = dx**2 + dy**2
+    b = 2 * (dx * (p1 - cx) + dy * (q1 - cy))
+    c = cx**2 + cy**2
+
+    c += p1**2 + q1**2
+    c -= 2 * (cx * p1 + cy * q1)
+    c -= circle.radius**2
+
+    delta = b * b - 4 * a * c
+
+    if delta < 0 or abs(a) < 0.000001:
+        return None, None
+
+    mu1 = (-b + sqrt(delta)) / (2 * a)
+    mu2 = (-b - sqrt(delta)) / (2 * a)
+
+    return Vector2(p1 + mu1 * (p2 - p1), q1 + mu1 * (q2 - q1)), Vector2(p1 + mu2 * (p2 - p1), q1 + mu2 * (q2 - q1))
+
+
+def closest_intersection(shapes, seg, current_pos):
+    distances = {}
+
+    for shape in shapes:
+        if isinstance(shape, Line):
+            intersection = intersection_segments_point(seg, shape)
+            if intersection is not None:
+                distances[(intersection - current_pos).length()] = intersection
+        if isinstance(shape, Circle):
+            intersections = intersection_circle_segment_points(seg, shape)
+            if intersections != (None, None):
+                for intersection in intersections:
+                    distances[(intersection - current_pos).length()] = intersection
+
+    if len(distances.keys()) == 0:
+        return None
+    print(distances)
+    return distances[min(distances)]
+
+
+
+
 
