@@ -1,3 +1,4 @@
+import math
 from math import sqrt
 from pygame import Vector2
 from shapes import Line, Circle
@@ -131,26 +132,76 @@ def intersection_circle_segment_point(seg, circle):
     return points
 
 
-def closest_intersection(shapes, seg, current_pos):
-    distances = {}
+def closest_intersection(lines, seg, current_pos):
+    founded = []
 
-    for shape in shapes:
-        if isinstance(shape, Line):
-            intersection = intersection_segments_point(seg, shape)
-            if intersection is not None:
-                distances[(intersection - current_pos).length()] = intersection
-        if isinstance(shape, Circle):
-            intersections = intersection_circle_segment_point(seg, shape)
-            if intersections is not None:
-                for intersection in intersections:
-                    distances[(intersection - current_pos).length()] = intersection
+    for line in lines:
+        for shape in line.hitbox:
+            if isinstance(shape, Line):
+                intersection = intersection_segments_point(seg, shape)
+                if intersection is not None:
+                    founded.append([(intersection - current_pos).length(), intersection, line])
+            if isinstance(shape, Circle):
+                intersections = intersection_circle_segment_point(seg, shape)
+                if intersections is not None:
+                    for intersection in intersections:
+                        founded.append([(intersection - current_pos).length(), intersection, line])
 
-    if len(distances.keys()) == 0:
+    if len(founded) == 0:
         return None
-    print(distances)
-    return distances[min(distances)]
+    print(founded)
+    return [x for x in founded if x[0] == min(founded, key=lambda x: x[0])[0]]
 
 
+def check_collisions(walls, seg, ball):
+    intersection = closest_intersection(walls, seg, ball.pos)
+    if intersection is None:
+        return False
+    print(intersection)
+    print(len(intersection))
+    if len(intersection) == 2:
+        _, inter_point, wall1 = intersection[0]
+        _, _, wall2 = intersection[1]
+
+        normal1 = normal_segment_circle(wall1, ball)
+        normal2 = normal_segment_circle(wall2, ball)
+        normal = (normal1+normal2).normalize()
+    else:
+        _, inter_point, wall = intersection[0]
+        normal = normal_segment_circle(wall, ball)
+
+    ball.pos.update(inter_point)
+    ball.bounce(normal)
+    return True
 
 
+def sgn(x):
+    return -1 if x < 0 else 1
 
+
+def circle_segment_intersection(line, circle):
+    if line.length <= 0:
+        return None
+
+    d = line.unit
+
+    t = d * (circle.pos - line.a)
+    closest = t * line.unit + line.a
+
+    dist_v = (closest - circle.pos).length()
+
+    if dist_v < circle.radius:
+        dt = math.sqrt(circle.radius**2 - dist_v**2)
+
+        points = []
+        #if 0 <= t - dt <= 1:
+        points.append((t - dt) * d + line.a)
+        #if 0 <= t + dt <= 1:
+        points.append((t + dt) * d + line.a)
+        #print(t, dt)
+        return points
+
+    elif dist_v == circle.radius:
+        return closest
+    else:
+        return None

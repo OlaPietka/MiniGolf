@@ -4,13 +4,9 @@ import pygame
 
 
 class Circle:
-    def __init__(self, pos=Vector2(180, 200), radius=10):
-        self.pos = pos
+    def __init__(self, pos, radius):
+        self.pos = Vector2(pos)
         self.radius = radius
-        self.size = 2*radius
-
-    def set_pos(self, pos):
-        self.pos = pos
 
     def draw(self, screen, color=(255, 255, 255), width=1):
         pygame.draw.circle(screen, color, np.array(self.pos, dtype=int), self.radius, width)
@@ -18,9 +14,9 @@ class Circle:
 
 class Line:
     def __init__(self, a, b):
-        self.a = a
-        self.b = b
-        self.vec = b - a
+        self.a = Vector2(a)
+        self.b = Vector2(b)
+        self.vec = Vector2(b) - Vector2(a)
 
     @property
     def length(self):

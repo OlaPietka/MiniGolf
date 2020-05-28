@@ -1,30 +1,13 @@
 import math
-
-from pygame import Vector2
+from rigidbody import Rigidbody
 from shapes import Circle, Line
 
 
-class Ball(Circle):
-    friction = 0.98
-
-    def __init__(self, pos=Vector2(180, 200), vel=Vector2(0, 0)):
-        super().__init__(pos)
-        self.vel = vel
+class Ball(Circle, Rigidbody):
+    def __init__(self, pos, radius, friction=0.98):
+        Circle.__init__(self, pos, radius)
+        Rigidbody.__init__(self, pos, (0, 0), (0, 0), math.pi * self.radius * self.radius, friction)
         self.image = 'images/ball_golf.png'
-        self.acc = Vector2(0, 0)
-        self.mass = math.pi * self.radius * self.radius
-
-    def apply_force(self, force):
-        self.acc += force
-
-    def move(self, t):
-        self.vel += self.acc * t
-        self.vel *= self.friction
-        self.pos += self.vel * t
-        self.acc = Vector2(0, 0)
-
-    def bounce(self, normal):
-        self.vel -= 2 * normal * (self.vel.dot(normal))
 
 
 class Wall(Line):
