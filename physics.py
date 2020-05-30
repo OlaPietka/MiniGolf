@@ -149,7 +149,6 @@ def closest_intersection(lines, seg, current_pos):
 
     if len(founded) == 0:
         return None
-    print(founded)
     return [x for x in founded if x[0] == min(founded, key=lambda x: x[0])[0]]
 
 
@@ -157,8 +156,6 @@ def check_collisions(walls, seg, ball):
     intersection = closest_intersection(walls, seg, ball.pos)
     if intersection is None:
         return False
-    print(intersection)
-    print(len(intersection))
     if len(intersection) == 2:
         _, inter_point, wall1 = intersection[0]
         _, _, wall2 = intersection[1]
@@ -175,33 +172,14 @@ def check_collisions(walls, seg, ball):
     return True
 
 
-def sgn(x):
-    return -1 if x < 0 else 1
+def point_in_rect(rect, point):
+    x1, y1, x2, y2 = rect
+    px, py = point
+    return (x1 < px < x2) and (y1 < py < y2)
 
 
-def circle_segment_intersection(line, circle):
-    if line.length <= 0:
-        return None
-
-    d = line.unit
-
-    t = d * (circle.pos - line.a)
-    closest = t * line.unit + line.a
-
-    dist_v = (closest - circle.pos).length()
-
-    if dist_v < circle.radius:
-        dt = math.sqrt(circle.radius**2 - dist_v**2)
-
-        points = []
-        #if 0 <= t - dt <= 1:
-        points.append((t - dt) * d + line.a)
-        #if 0 <= t + dt <= 1:
-        points.append((t + dt) * d + line.a)
-        #print(t, dt)
-        return points
-
-    elif dist_v == circle.radius:
-        return closest
-    else:
-        return None
+def point_in_circle(circle, point):
+    cx, cy = circle.pos
+    r = circle.radius
+    x, y = point
+    return ((x - cx)**2 + (y - cy)**2) < (r**2)

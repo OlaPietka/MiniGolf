@@ -1,21 +1,35 @@
+from enum import Enum
 import pygame
+from config import sheet_path
+from transformation import indexes_2_rect
+
+sheet = pygame.image.load(sheet_path)
 
 
-class SpriteSheet:
-    def __init__(self, filename):
-        self.sheet = pygame.image.load(filename).convert()
+def image_at(i, j):
+    # Loads image from x, y, x+offset, y+offset.
+    rect = pygame.Rect(indexes_2_rect(i, j))
+    image = pygame.Surface(rect.size)
+    image.blit(sheet, (0, 0), rect)
+    return image
 
-    def image_at(self, rectangle):
-        # Loads image from x, y, x+offset, y+offset.
-        rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
-        image.blit(self.sheet, (0, 0), rect)
-        return image
 
-    def images_at(self, rects):
-        return [self.image_at(rect) for rect in rects]
+class Type(Enum):
+    GRASS = 1
+    WATER = 2
+    WALL = 3
+    SAND = 4
+    DARK_GRASS = 5
+    GREEN = 6
 
-    def load_strip(self, rect, image_count):
-        tups = [(rect[0]+rect[2]*x, rect[1], rect[2], rect[3])
-                for x in range(image_count)]
-        return self.images_at(tups)
+
+position_map = {Type.GRASS: image_at(5, 0),
+                Type.WATER: image_at(0, 0),
+                Type.SAND: image_at(8, 0),
+                Type.WALL: image_at(1, 26),
+                Type.DARK_GRASS: image_at(3, 16),
+                Type.GREEN: image_at(10, 26)}
+
+
+def get_image(cell_type):
+    return position_map[cell_type]
