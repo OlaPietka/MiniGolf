@@ -180,6 +180,16 @@ def point_in_rect(rect, point):
 
 def point_in_circle(circle, point):
     cx, cy = circle.pos
-    r = circle.radius
+    r = circle.radius + 5
     x, y = point
     return ((x - cx)**2 + (y - cy)**2) < (r**2)
+
+
+def gravity(circle, ball):
+    d = (circle.pos-ball.pos).length()
+
+    force = 1/10 * ((circle.mass * ball.mass) / (d*100))
+    normal = (circle.pos - ball.pos).normalize()
+
+    return force*normal
+

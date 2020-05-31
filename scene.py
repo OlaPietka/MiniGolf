@@ -1,3 +1,7 @@
+import random
+
+import pygame
+
 import config
 from game_objects import Wall
 from transformation import indexes_2_pixels, indexes_2_rect
@@ -39,7 +43,14 @@ class Scene:
             self.horizontal_line(i1, i2, row, cell)
 
     def single(self, row, col, cell):
-        self.add_cell(row, col, cell)
+        self.add_cell(col, row, cell)
+
+    def random_on_rect(self, i1, j1, i2, j2, cell, n):
+        for i in range(n):
+            random_i = random.randint(i1, i2)
+            random_j = random.randint(j1, j2)
+            print(random_i, random_j)
+            self.single(random_i, random_j, cell)
 
     def blit(self, screen):
         for i in range(len(self.board)):

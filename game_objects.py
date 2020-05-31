@@ -17,14 +17,26 @@ class Ball(Circle, Rigidbody):
 
     def ground_friction(self, ground_type):
         if ground_type == Type.GRASS:
-            self.friction = 0.98
+            self.friction = 0.985
         elif ground_type == Type.SAND:
             self.friction = 0.80
         elif ground_type == Type.WATER:
             self.friction = 0.70
 
+    def not_moving(self):
+        return self.vel.length() <= 0.05
+
     def blit(self, screen):
         screen.blit(self.image, (self.pos - pygame.Vector2(self.radius)))
+
+
+class Hole(Circle, Rigidbody):
+    def __init__(self, pos, radius):
+        Circle.__init__(self, pos, radius)
+        Rigidbody.__init__(self, pos, (0, 0), (0, 0), 314, 0)
+
+    def blit(self, screen):
+        self.draw(screen, (0, 0, 0), 0)
 
 
 class Wall(Line):
