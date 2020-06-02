@@ -7,3 +7,5 @@ cell_size = 16
 sheet_size = 16
 sheet_offset = 1
 sheet_path = "images/sheet_map.png"
+
+cart_size = 40

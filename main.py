@@ -1,21 +1,18 @@
+import numpy as np
+
 import physics
 import pygame
 from pygame import Vector2
-from levels import Level1
+from levels import Level1, Level2, Level3, Level4, Levels
 from game_objects import Ball, Hole
-from shapes import Line, Circle
+from shapes import Line
 import config
 from transformation import pixels_2_indexes
 
 
-def get_image(obj):
-    image = pygame.image.load(obj.image)
-    image = pygame.transform.scale(image, (obj.size, obj.size))
-    return image
-
-
-def center_pos(obj):
-    return obj.pos - obj.radius
+def new_game(level):
+    level.init()
+    return level.carts(), Ball(level.start_point, config.ball_radius), Hole(level.end_point, config.ball_radius + 5)
 
 
 pygame.init()
@@ -27,7 +24,9 @@ game_end = False
 mi = Vector2(0, 0)
 mf = Vector2(0, 0)
 
-level = Level1()
+levels = Levels()
+level = levels.get_next()
+
 ball = Ball(level.start_point, config.ball_radius)
 hole = Hole(level.end_point, config.ball_radius + 5)
 ball_moving = False
@@ -35,9 +34,10 @@ show_arrow = False
 
 if __name__ == "__main__":
     level.init()
+    carts = level.carts()
 
     while not game_end:
-        screen.fill(0)
+        screen.fill(level.background_color)
         dt = clock.tick(140) / 100.0
 
         for event in pygame.event.get():
@@ -45,11 +45,10 @@ if __name__ == "__main__":
                 game_end = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mi = Vector2(pygame.mouse.get_pos())
-                if physics.point_in_circle(ball, mi) and not ball_moving:
+                if physics.point_in_circle(ball, mi) and ball.not_moving():
                     show_arrow = True
             if event.type == pygame.MOUSEBUTTONUP:
-                if not ball_moving and show_arrow:
-                    ball_moving = True
+                if ball.not_moving() and show_arrow:
                     mf = Vector2(pygame.mouse.get_pos())
                     ball.apply_force((mi-mf)*4)
                     show_arrow = False
@@ -69,6 +68,14 @@ if __name__ == "__main__":
         ball.blit(screen)
         level.draw_hitboxes(screen)
 
+        if carts is not None:
+            for cart in carts:
+                cart.blit(screen)
+                cart.move_cart(dt)
+
+                if physics.ball_rectangle_intersect(ball, cart):
+                    carts, ball, hole = new_game(level)
+
         if show_arrow:
             mm = Vector2(pygame.mouse.get_pos())
             force_length = (ball.pos-mm).length()
@@ -76,13 +83,21 @@ if __name__ == "__main__":
                 force_length = 100
             pygame.draw.line(screen, (255, 255, 255), ball.pos, (ball.pos - mm).normalize() * force_length + ball.pos)
 
-        if ball.not_moving():
-            ball_moving = False
-
         pygame.display.flip()
 
         if physics.point_in_circle(hole, ball.pos):
             ball.vel += (hole.pos - ball.pos)
+
+        if (ball.pos - hole.pos).length() <= hole.radius - ball.radius:
+            level = levels.get_next()
+
+            if level is None:
+                game_end = True
+                continue
+            carts, ball, hole = new_game(level)
+
+        if cell.type.value == 11 or cell.type.value == 6 or cell.type.value == 16:
+            carts, ball, hole = new_game(level)
 
     pygame.quit()
     exit(0)

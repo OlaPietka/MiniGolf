@@ -49,7 +49,6 @@ class Scene:
         for i in range(n):
             random_i = random.randint(i1, i2)
             random_j = random.randint(j1, j2)
-            print(random_i, random_j)
             self.single(random_i, random_j, cell)
 
     def blit(self, screen):

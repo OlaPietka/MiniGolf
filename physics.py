@@ -193,3 +193,21 @@ def gravity(circle, ball):
 
     return force*normal
 
+
+def ball_rectangle_intersect(ball, rect):
+    r1x1, r1y1 = ball.pos[0] - ball.radius, ball.pos[1] - ball.radius
+    r1x2, r1y2 = r1x1 + ball.radius*2, r1y1 + ball.radius*2
+
+    r2x1, r2y1 = rect.pos
+    r2x2, r2y2 = r2x1 + rect.size, r2y1 + rect.size
+
+    # If one rectangle is on left side of other]
+    if (r1x1 >= r2x2) or (r2x1 >= r1x2):
+        return False
+
+    # If one rectangle is above other
+    if (r1y1 <= r2y2) and (r2y1 <= r1y2):
+        return True
+
+    return False
+
