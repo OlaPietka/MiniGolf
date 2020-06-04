@@ -6,10 +6,12 @@ Simple mini golf game using pygame
 <p align="center">
   <img width="420" height="245" src="https://i.imgur.com/u8fdp6h.png">
 </p>
+
 #### Medium:
 <p align="center">
   <img width="420" height="245" src="https://i.imgur.com/Qij9ID5.png">
 </p>
+
 #### Hard:
 <p align="center">
   <img width="420" height="245" src="https://i.imgur.com/N6hBs33.png">
