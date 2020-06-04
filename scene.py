@@ -7,15 +7,14 @@ from game_objects import Wall
 from transformation import indexes_2_pixels, indexes_2_rect
 
 
-def init_board():
-    return [[None for _ in range(config.screen_size[1]//config.cell_size)]
-            for _ in range(config.screen_size[0]//config.cell_size)]
-
-
 class Scene:
     def __init__(self):
         self.walls = []
-        self.board = init_board()
+        self.board = self.init_board()
+
+    def init_board(self):
+        return [[None for _ in range(config.screen_size[1] // config.cell_size)]
+                for _ in range(config.screen_size[0] // config.cell_size)]
 
     def add_walls(self, *walls):
         for wall in walls:

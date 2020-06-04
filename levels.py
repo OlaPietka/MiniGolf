@@ -29,7 +29,7 @@ mushroom_cell = Cell(Type.MUSHROOM)
 class Levels:
     def __init__(self):
         self.levels = [Level1(), Level2(), Level3(), Level4(), Level5(), Level6(), Level7(), Level8(), Level9()]
-        self.current = 0
+        self.current = 7
         self.count = len(self.levels)
 
     def get_next(self):
@@ -49,6 +49,9 @@ class Level1(Scene):
         self.background_color = (123, 172, 44)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, green_cell)
 
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
@@ -66,6 +69,7 @@ class Level1(Scene):
         self.horizontal_line(30, 80, 30, wall_cell, down=False)
         self.vertical_line(10, 30, 80, wall_cell, right=False)
 
+    @property
     def carts(self):
         return None
 
@@ -78,6 +82,9 @@ class Level2(Scene):
         self.background_color = (123, 172, 44)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, green_cell)
 
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
@@ -108,6 +115,7 @@ class Level2(Scene):
         self.horizontal_line(60, 80, 50, wall_cell, down=False)
         self.vertical_line(20, 50, 80, wall_cell, right=False)
 
+    @property
     def carts(self):
         return None
 
@@ -120,6 +128,9 @@ class Level3(Scene):
         self.background_color = (123, 172, 44)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, green_cell)
 
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
@@ -162,6 +173,7 @@ class Level3(Scene):
         self.horizontal_line(20, 21, 20, wall_cell, down=False)
         self.horizontal_line(20, 21, 40, wall_cell, down=True)
 
+    @property
     def carts(self):
         return None
 
@@ -174,6 +186,9 @@ class Level4(Scene):
         self.background_color = (182, 94, 38)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, orange_cell)
 
         self.random_on_rect(0, 0, 89, 59, cactus_cell, 100)
@@ -187,6 +202,7 @@ class Level4(Scene):
         self.vertical_line(20, 40, 10, wall_cell, right=True)
         self.vertical_line(20, 40, 80, wall_cell, right=False)
 
+    @property
     def carts(self):
         return [Cart(indexes_2_pixels(40, 25), 15, *indexes_2_pixels(20, 39), is_vertical=True),
                 Cart(indexes_2_pixels(50, 25), 10, *indexes_2_pixels(20, 39), is_vertical=True),
@@ -201,6 +217,9 @@ class Level5(Scene):
         self.background_color = (182, 94, 38)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, orange_cell)
 
         self.random_on_rect(0, 0, 89, 59, cactus_cell, 100)
@@ -243,6 +262,7 @@ class Level5(Scene):
 
         self.horizontal_line(70, 80, 35, wall_cell, down=True)
 
+    @property
     def carts(self):
         return [Cart(indexes_2_pixels(50, 20), 15, *indexes_2_pixels(10, 30-1), is_vertical=True),
                 Cart(indexes_2_pixels(30, 20), 15, *indexes_2_pixels(10, 30 - 1), is_vertical=True),
@@ -258,6 +278,9 @@ class Level6(Scene):
         self.background_color = (182, 94, 38)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, orange_cell)
 
         self.random_on_rect(0, 0, 89, 59, cactus_cell, 100)
@@ -309,6 +332,7 @@ class Level6(Scene):
 
         self.horizontal_line(40, 50, 30, wall_cell, down=False)
 
+    @property
     def carts(self):
         return [Cart(indexes_2_pixels(52, 39), 2, *indexes_2_pixels(50, 55-1), is_vertical=False),
                 Cart(indexes_2_pixels(37, 39), 2, *indexes_2_pixels(35, 40 - 1), is_vertical=False),
@@ -327,6 +351,9 @@ class Level7(Scene):
         self.background_color = (99, 197, 207)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, blue_cell)
 
         self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
@@ -347,6 +374,7 @@ class Level7(Scene):
 
         self.vertical_line(10, 50, 80, wall_cell, right=False)
 
+    @property
     def carts(self):
         return None
 
@@ -359,6 +387,9 @@ class Level8(Scene):
         self.background_color = (99, 197, 207)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, blue_cell)
 
         self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
@@ -392,6 +423,7 @@ class Level8(Scene):
 
         self.vertical_line(10, 20, 80, wall_cell, right=False)
 
+    @property
     def carts(self):
         return None
 
@@ -404,6 +436,9 @@ class Level9(Scene):
         self.background_color = (99, 197, 207)
 
     def init(self):
+        self.init_board()
+        self.walls = []
+
         self.rectangle(0, 0, 89, 59, blue_cell)
 
         self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
@@ -432,5 +467,6 @@ class Level9(Scene):
 
         self.horizontal_line(65, 70, 15, wall_cell, down=True)
 
+    @property
     def carts(self):
         return None

@@ -9,6 +9,11 @@ class Rigidbody:
         self.mass = mass
         self.friction = friction
 
+    def reset(self, pos):
+        self.pos = Vector2(pos)
+        self.vel = Vector2(0, 0)
+        self.acc = Vector2(0, 0)
+
     def apply_force(self, force):
         self.acc += force
 

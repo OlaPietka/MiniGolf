@@ -2,7 +2,6 @@ from game_manager import GameManager
 import physics
 import pygame
 from pygame import Vector2
-from levels import Levels
 from game_objects import Ball, Hole
 from shapes import Line
 import config
@@ -19,16 +18,13 @@ game_start = False
 mi = Vector2(0, 0)
 mf = Vector2(0, 0)
 
-levels = Levels()
-level = levels.get_next()
+game_manager = GameManager()
 
-ball = Ball(level.start_point, config.ball_radius)
-hole = Hole(level.end_point, config.ball_radius + 5)
+ball = Ball(game_manager.current_level.start_point, config.ball_radius)
+hole = Hole(game_manager.current_level.end_point, config.ball_radius + 5)
 
 ball_moving = False
 show_arrow = False
-
-game_manager = GameManager(levels)
 
 if __name__ == "__main__":
     while not game_start:
@@ -48,12 +44,13 @@ if __name__ == "__main__":
         game_manager.blit_start(screen)
         pygame.display.flip()
 
-    level.init()
-    carts = level.carts()
+    game_manager.current_level.init()
+    carts = game_manager.current_level.carts
 
     while not game_end:
-        screen.fill(level.background_color)
+        screen.fill(game_manager.current_level.background_color)
         dt = clock.tick(140) / 100.0
+        print(dt)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -72,18 +69,16 @@ if __name__ == "__main__":
 
         ball.move(dt)
         time_line = Line(ball.pos, ball.pos + ball.vel * dt)
-        time_line.draw(screen)
 
         i, j = pixels_2_indexes(*ball.pos)
-        cell = level.board[i][j]
+        cell = game_manager.current_level.board[i][j]
         ball.ground_friction(cell.type)
 
-        physics.check_collisions(level.walls, time_line, ball)
+        physics.check_collisions(game_manager.current_level.walls, time_line, ball)
 
-        level.blit(screen)
+        game_manager.current_level.blit(screen)
         hole.blit(screen)
         ball.blit(screen)
-        level.draw_hitboxes(screen)
         game_manager.blit_text(screen)
         game_manager.blit_lives(screen)
 
@@ -93,8 +88,7 @@ if __name__ == "__main__":
                 cart.move_cart(dt)
 
                 if game_manager.ball_touch_cart(ball, cart):
-                    game_manager.reset_level()
-                    carts, ball, hole = game_manager.new_game(level)
+                    game_manager.reset_level(ball, hole)
 
         if show_arrow:
             mm = Vector2(pygame.mouse.get_pos())
@@ -109,19 +103,17 @@ if __name__ == "__main__":
             ball.vel += (hole.pos - ball.pos)
 
         if game_manager.ball_in_hole(ball, hole):
-            carts, ball, hole, level, is_end = game_manager.new_level()
+            carts, is_end = game_manager.new_level(ball, hole)
 
             if is_end:
                 game_end = True
                 continue
 
         if game_manager.ball_outside(cell.type.value):
-            game_manager.reset_level()
-            carts, ball, hole = game_manager.new_game(level)
+            game_manager.reset_level(ball, hole)
 
         if game_manager.no_lives():
-            level = game_manager.levels.get_next()
-            carts, ball, hole = game_manager.new_game(level)
+            carts = game_manager.new_game(ball, hole)
 
     exit_game = False
     font = pygame.font.SysFont('Comic Sans MS', 30)
