@@ -29,7 +29,7 @@ mushroom_cell = Cell(Type.MUSHROOM)
 class Levels:
     def __init__(self):
         self.levels = [Level1(), Level2(), Level3(), Level4(), Level5(), Level6(), Level7(), Level8(), Level9()]
-        self.current = 7
+        self.current = 0
         self.count = len(self.levels)
 
     def get_next(self):
