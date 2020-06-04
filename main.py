@@ -50,7 +50,6 @@ if __name__ == "__main__":
     while not game_end:
         screen.fill(game_manager.current_level.background_color)
         dt = clock.tick(140) / 100.0
-        print(dt)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
