@@ -1,18 +1,12 @@
-import numpy as np
-
+from game_manager import GameManager
 import physics
 import pygame
 from pygame import Vector2
-from levels import Level1, Level2, Level3, Level4, Levels
+from levels import Levels
 from game_objects import Ball, Hole
 from shapes import Line
 import config
 from transformation import pixels_2_indexes
-
-
-def new_game(level):
-    level.init()
-    return level.carts(), Ball(level.start_point, config.ball_radius), Hole(level.end_point, config.ball_radius + 5)
 
 
 pygame.init()
@@ -20,6 +14,7 @@ screen = pygame.display.set_mode(config.screen_size)
 clock = pygame.time.Clock()
 
 game_end = False
+game_start = False
 
 mi = Vector2(0, 0)
 mf = Vector2(0, 0)
@@ -29,10 +24,30 @@ level = levels.get_next()
 
 ball = Ball(level.start_point, config.ball_radius)
 hole = Hole(level.end_point, config.ball_radius + 5)
+
 ball_moving = False
 show_arrow = False
 
+game_manager = GameManager(levels)
+
 if __name__ == "__main__":
+    while not game_start:
+        screen.fill((255, 255, 255))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit(0)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse = Vector2(pygame.mouse.get_pos())
+                x = config.screen_size[0] // 2 - 140
+                y = config.screen_size[1] // 2 - 70
+                if physics.point_in_rect((x, y, x + 319, y + 85), mouse):
+                    game_start = True
+
+        game_manager.blit_start(screen)
+        pygame.display.flip()
+
     level.init()
     carts = level.carts()
 
@@ -42,7 +57,8 @@ if __name__ == "__main__":
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_end = True
+                pygame.quit()
+                exit(0)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mi = Vector2(pygame.mouse.get_pos())
                 if physics.point_in_circle(ball, mi) and ball.not_moving():
@@ -52,6 +68,7 @@ if __name__ == "__main__":
                     mf = Vector2(pygame.mouse.get_pos())
                     ball.apply_force((mi-mf)*4)
                     show_arrow = False
+                    game_manager.throw_number += 1
 
         ball.move(dt)
         time_line = Line(ball.pos, ball.pos + ball.vel * dt)
@@ -67,14 +84,17 @@ if __name__ == "__main__":
         hole.blit(screen)
         ball.blit(screen)
         level.draw_hitboxes(screen)
+        game_manager.blit_text(screen)
+        game_manager.blit_lives(screen)
 
         if carts is not None:
             for cart in carts:
                 cart.blit(screen)
                 cart.move_cart(dt)
 
-                if physics.ball_rectangle_intersect(ball, cart):
-                    carts, ball, hole = new_game(level)
+                if game_manager.ball_touch_cart(ball, cart):
+                    game_manager.reset_level()
+                    carts, ball, hole = game_manager.new_game(level)
 
         if show_arrow:
             mm = Vector2(pygame.mouse.get_pos())
@@ -88,16 +108,35 @@ if __name__ == "__main__":
         if physics.point_in_circle(hole, ball.pos):
             ball.vel += (hole.pos - ball.pos)
 
-        if (ball.pos - hole.pos).length() <= hole.radius - ball.radius:
-            level = levels.get_next()
+        if game_manager.ball_in_hole(ball, hole):
+            carts, ball, hole, level, is_end = game_manager.new_level()
 
-            if level is None:
+            if is_end:
                 game_end = True
                 continue
-            carts, ball, hole = new_game(level)
 
-        if cell.type.value == 11 or cell.type.value == 6 or cell.type.value == 16:
-            carts, ball, hole = new_game(level)
+        if game_manager.ball_outside(cell.type.value):
+            game_manager.reset_level()
+            carts, ball, hole = game_manager.new_game(level)
+
+        if game_manager.no_lives():
+            level = game_manager.levels.get_next()
+            carts, ball, hole = game_manager.new_game(level)
+
+    exit_game = False
+    font = pygame.font.SysFont('Comic Sans MS', 30)
+
+    while not exit_game:
+        screen.fill((255, 255, 255))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit_game = True
+
+        pygame.draw.line(screen, (255, 255, 0), (10, 10), (100, 100))
+        game_manager.blit_the_end(screen)
+
+        pygame.display.flip()
 
     pygame.quit()
     exit(0)

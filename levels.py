@@ -18,18 +18,18 @@ orange_cell = Cell(Type.ORANGE)
 orange_tree_cell = Cell(Type.ORANGE_TREE)
 cactus_cell = Cell(Type.CACTUS)
 empty_tree_cell = Cell(Type.EMPTY_TREE)
-cart_cell = Cell(Type.CART)
 blue_cell = Cell(Type.BLUE)
 blue_grass_cell = Cell(Type.BLUE_GRASS)
 cloud1_cell = Cell(Type.CLOUD1)
 cloud2_cell = Cell(Type.CLOUD2)
 cloud3_cell = Cell(Type.CLOUD3)
+mushroom_cell = Cell(Type.MUSHROOM)
 
 
 class Levels:
     def __init__(self):
-        self.levels = [Level1(), Level2(), Level3(), Level4(), Level5(), Level6()]
-        self.current = 5
+        self.levels = [Level1(), Level2(), Level3(), Level4(), Level5(), Level6(), Level7(), Level8(), Level9()]
+        self.current = 0
         self.count = len(self.levels)
 
     def get_next(self):
@@ -50,11 +50,15 @@ class Level1(Scene):
 
     def init(self):
         self.rectangle(0, 0, 89, 59, green_cell)
+
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_blue_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_white_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, mushroom_cell, 100)
+
         self.rectangle(10, 10, 30, 50, grass_cell)
         self.rectangle(30, 10, 80, 30, grass_cell)
+
         self.horizontal_line(10, 80, 10, wall_cell, down=True)
         self.vertical_line(10, 50, 10, wall_cell, right=True)
         self.horizontal_line(10, 30, 50, wall_cell, down=False)
@@ -79,6 +83,7 @@ class Level2(Scene):
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_blue_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_white_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, mushroom_cell, 100)
 
         self.rectangle(10, 10, 30, 50, grass_cell)
         self.rectangle(30, 10, 50, 20, grass_cell)
@@ -120,6 +125,7 @@ class Level3(Scene):
         self.random_on_rect(0, 0, 89, 59, flower_red_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_blue_cell, 100)
         self.random_on_rect(0, 0, 89, 59, flower_white_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, mushroom_cell, 100)
 
         self.rectangle(10, 10, 30, 50, grass_cell)
         self.rectangle(30, 10, 80, 20, grass_cell)
@@ -176,7 +182,6 @@ class Level4(Scene):
 
         self.rectangle(10, 20, 80, 40, orange_grass_cell)
 
-        self.single(25, 20, cart_cell)
         self.horizontal_line(10, 80, 20, wall_cell, down=True)
         self.horizontal_line(10, 80, 40, wall_cell, down=False)
         self.vertical_line(20, 40, 10, wall_cell, right=True)
@@ -313,3 +318,119 @@ class Level6(Scene):
                 Cart(indexes_2_pixels(75, 29), 5, *indexes_2_pixels(70, 80-1), is_vertical=False),
                 Cart(indexes_2_pixels(45, 20), 5, *indexes_2_pixels(40, 50-1), is_vertical=False)]
 
+
+class Level7(Scene):
+    def __init__(self):
+        super().__init__()
+        self.start_point = indexes_2_pixels(15, 20)
+        self.end_point = indexes_2_pixels(75, 30)
+        self.background_color = (99, 197, 207)
+
+    def init(self):
+        self.rectangle(0, 0, 89, 59, blue_cell)
+
+        self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud2_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud3_cell, 100)
+
+        self.rectangle(10, 10, 20, 50, blue_grass_cell)
+        self.rectangle(20, 27, 70, 33, blue_grass_cell)
+        self.rectangle(70, 10, 80, 50, blue_grass_cell)
+
+        self.horizontal_line(10, 20, 10, wall_cell, down=True)
+        self.horizontal_line(10, 20, 50, wall_cell, down=False)
+
+        self.vertical_line(10, 50, 10, wall_cell, right=True)
+
+        self.vertical_line(10, 27, 20, wall_cell, right=False)
+        self.vertical_line(33, 50, 20, wall_cell, right=False)
+
+        self.vertical_line(10, 50, 80, wall_cell, right=False)
+
+    def carts(self):
+        return None
+
+
+class Level8(Scene):
+    def __init__(self):
+        super().__init__()
+        self.start_point = indexes_2_pixels(15, 12)
+        self.end_point = indexes_2_pixels(75, 15)
+        self.background_color = (99, 197, 207)
+
+    def init(self):
+        self.rectangle(0, 0, 89, 59, blue_cell)
+
+        self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud2_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud3_cell, 100)
+
+        self.rectangle(10, 10, 20, 50, blue_grass_cell)
+        self.rectangle(20, 40, 30, 50, blue_grass_cell)
+        self.rectangle(30, 43, 45, 47, blue_grass_cell)
+        self.rectangle(45, 10, 55, 47, blue_grass_cell)
+        self.rectangle(55, 10, 80, 20, blue_grass_cell)
+
+        self.horizontal_line(10, 20, 10, wall_cell, down=True)
+
+        self.vertical_line(10, 15, 10, wall_cell, right=True)
+        self.vertical_line(10, 15, 20, wall_cell, right=False)
+
+        self.vertical_line(20, 30, 14, wall_cell, right=False)
+        self.vertical_line(20, 30, 15, wall_cell, right=True)
+        self.horizontal_line(14, 15, 20, wall_cell, down=False)
+        self.horizontal_line(14, 15, 30, wall_cell, down=True)
+
+        self.horizontal_line(10, 20, 50, wall_cell, down=False)
+
+        self.horizontal_line(30, 45, 43, wall_cell, down=True)
+        self.horizontal_line(30, 45, 47, wall_cell, down=False)
+
+        self.vertical_line(30, 47, 55, wall_cell, right=False)
+
+        self.horizontal_line(45, 55, 10, wall_cell, down=True)
+
+        self.vertical_line(10, 20, 80, wall_cell, right=False)
+
+    def carts(self):
+        return None
+
+
+class Level9(Scene):
+    def __init__(self):
+        super().__init__()
+        self.start_point = indexes_2_pixels(15, 47)
+        self.end_point = indexes_2_pixels(77, 15)
+        self.background_color = (99, 197, 207)
+
+    def init(self):
+        self.rectangle(0, 0, 89, 59, blue_cell)
+
+        self.random_on_rect(0, 0, 89, 59, cloud1_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud2_cell, 100)
+        self.random_on_rect(0, 0, 89, 59, cloud3_cell, 100)
+
+        self.rectangle(10, 25, 20, 50, blue_grass_cell)
+        self.rectangle(20, 25, 50, 30, blue_grass_cell)
+        self.rectangle(40, 30, 50, 40, blue_grass_cell)
+        self.rectangle(50, 30, 70, 40, blue_grass_cell)
+        self.rectangle(60, 10, 70, 30, blue_grass_cell)
+        self.rectangle(70, 10, 80, 20, blue_grass_cell)
+
+        self.horizontal_line(10, 20, 50, wall_cell, down=False)
+
+        self.vertical_line(40, 50, 10, wall_cell, right=True)
+        self.vertical_line(40, 50, 20, wall_cell, right=False)
+
+        self.horizontal_line(12, 18, 27, wall_cell, down=True)
+
+        self.vertical_line(35, 40, 40, wall_cell, right=True)
+
+        self.horizontal_line(40, 50, 40, wall_cell, down=False)
+
+        self.vertical_line(32, 38, 60, wall_cell, right=False)
+
+        self.horizontal_line(65, 70, 15, wall_cell, down=True)
+
+    def carts(self):
+        return None

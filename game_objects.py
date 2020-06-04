@@ -57,7 +57,7 @@ class Wall(Line):
 class Cart(Rigidbody):
     def __init__(self, pos, power, a, b, is_vertical=False):
         Rigidbody.__init__(self, pos, (1*power, 0) if not is_vertical else (0, 1*power), 0, 0, 1)
-        self.image = get_image(Type.CART, is_vertical)
+        self.image = get_image(Type.CART1 if not is_vertical else Type.CART2)
         self.move_vertical = is_vertical
         self.size = config.cart_size
         self.a = a

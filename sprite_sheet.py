@@ -36,12 +36,14 @@ class Type(Enum):
     CACTUS = 12
     ORANGE_TREE = 13
     EMPTY_TREE = 14
-    CART = 15
+    CART1 = 15
     BLUE = 16
     BLUE_GRASS = 17
     CLOUD1 = 18
     CLOUD2 = 19
     CLOUD3 = 20
+    MUSHROOM = 21
+    CART2 = 22
 
 
 position_map = {Type.GRASS: image_at(5, 0),
@@ -58,17 +60,16 @@ position_map = {Type.GRASS: image_at(5, 0),
                 Type.CACTUS: image_at(22, 9),
                 Type.ORANGE_TREE: image_at(17, 9),
                 Type.EMPTY_TREE: image_at(27, 9),
-                Type.CART: image_at(49, 18, resize=True, size=(cart_size, cart_size)),
-                Type.BLUE: image_at(16, 26),
+                Type.CART1: image_at(49, 18, resize=True, size=(cart_size, cart_size)),
+                Type.CART2: image_at(51, 18, resize=True, size=(cart_size, cart_size)),
+                Type.BLUE: image_at(0, 0),
                 Type.BLUE_GRASS: image_at(11, 8),
-                Type.CLOUD1: image_at(54, 23),
-                Type.CLOUD2: image_at(55, 23),
-                Type.CLOUD3: image_at(56, 23),
+                Type.CLOUD1: image_at(54, 24),
+                Type.CLOUD2: image_at(55, 24),
+                Type.CLOUD3: image_at(56, 24),
+                Type.MUSHROOM: image_at(48, 5),
                 }
 
 
-def get_image(cell_type, rotate=False):
-    image = position_map[cell_type]
-    if rotate:
-        image = pygame.transform.rotate(image, -90)
-    return image
+def get_image(cell_type):
+    return position_map[cell_type]
