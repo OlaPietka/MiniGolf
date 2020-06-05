@@ -20,3 +20,5 @@ Simple mini golf game using pygame
 ## To-do:
 * Correct bounce physics (very rarely the ball bounces in the wrong direction)
 * Add more levels and obsticles
+
+Assets: https://www.kenney.nl/assets
