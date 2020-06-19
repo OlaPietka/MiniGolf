@@ -1,5 +1,7 @@
 # MiniGolf
-Simple mini golf game using pygame
+Simple mini golf game using pygame and implemented phycis engine
+
+This project was just an exercise to learn how to implement own physics engine.
 
 ### Level themes
 #### Easy:
